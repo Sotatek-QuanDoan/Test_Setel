@@ -1,5 +1,5 @@
 1. Docker build and run services
-   docker-compose up --build
+   "docker-compose up --build"
 
 2. Access to the app
    http://localhost:3000
