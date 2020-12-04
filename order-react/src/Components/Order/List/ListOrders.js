@@ -9,7 +9,7 @@ const { REACT_APP_ORDER_API_URL } = process.env;
 function ListOrders(props) {
   const [orders, setOrders] = useState([]);
   const [totalPage, setTotalPage] = useState(1);
-  const [currentPage, setCurrentpage] = useState(+props.page);
+  const [currentPage, setCurrentpage] = useState(+props.page || 1);
 
   useEffect(() => {
     getOrders(currentPage);

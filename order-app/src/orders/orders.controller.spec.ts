@@ -23,6 +23,10 @@ describe('Order Controller', () => {
     },
   ];
 
+  const limit = 5;
+  const countOrders = 15;
+  const totalPage = Math.ceil(15 / limit);
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [OrdersController],
@@ -30,8 +34,13 @@ describe('Order Controller', () => {
         {
           provide: OrdersService,
           useValue: {
-            findAllByUser: jest.fn().mockResolvedValue(() => [arrOrders]),
-            find: jest.fn().mockImplementation(() =>
+            findAllByUser: jest
+              .fn()
+              .mockImplementation(() => Promise.resolve(arrOrders)),
+            countAllByUser: jest
+              .fn()
+              .mockImplementation(() => Promise.resolve(countOrders)),
+            findById: jest.fn().mockImplementation(() =>
               Promise.resolve({
                 userId: '1',
                 orderId: '12345',
@@ -57,10 +66,13 @@ describe('Order Controller', () => {
                 ],
               }),
             ),
-            cancelOrder: jest
+            updateStatus: jest
+              .fn()
+              .mockImplementation(() => Promise.resolve({ nModified: 1 })),
+            confirmOrder: jest
               .fn()
               .mockImplementation(() =>
-                Promise.resolve({ orderId: 'a shortid', status: 'cancelled' }),
+                Promise.resolve({ orderId: '1', status: 'confirmed' }),
               ),
           },
         },
@@ -76,7 +88,10 @@ describe('Order Controller', () => {
 
   describe('findAllByUser', () => {
     it('should get an array of orders', () => {
-      expect(controller.findAllByUser('1', 1)).resolves.toEqual(arrOrders);
+      expect(controller.findAllByUser('1', 1)).resolves.toEqual({
+        list: arrOrders,
+        totalPage,
+      });
     });
   });
   describe('find', () => {
@@ -90,7 +105,7 @@ describe('Order Controller', () => {
       });
     });
   });
-  describe('create new order', () => {
+  describe('create', () => {
     it('should create a new order', () => {
       const newOrder: BodyOrderDto = {
         order: [
@@ -117,7 +132,7 @@ describe('Order Controller', () => {
       });
     });
   });
-  describe('cancel an order', () => {
+  describe('cancelOrder', () => {
     it('should update order status to "cancelled"', () => {
       expect(controller.cancelOrder('1')).resolves.toEqual(
         'Cancel order success.',

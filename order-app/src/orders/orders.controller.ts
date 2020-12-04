@@ -60,7 +60,7 @@ export class OrdersController {
     const { order } = body;
     const orderItems = Object.values(order);
     const newOrderData: CreateOrderDto = {
-      userId: 1,
+      userId: '1',
       orderId: generate(),
       items: [],
       total: 0,

@@ -9,25 +9,6 @@ import 'dotenv';
 
 const { ORDER_MODEL } = constants;
 
-// const mockOrder: (
-//   name?: string,
-//   id?: string,
-//   age?: number,
-//   breed?: string,
-// ) => Order = (
-//   name = 'Ventus',
-//   id = 'a uuid',
-//   age = 4,
-//   breed = 'Russian Blue',
-// ) => {
-//   return {
-//     name,
-//     id,
-//     age,
-//     breed,
-//   };
-// };
-
 const orderArray = [
   {
     userId: '1',
@@ -176,7 +157,7 @@ describe('OrdersService', () => {
     } as any); // dreaded as any, but it can't be helped
 
     const newOrder = await ordersService.create({
-      userId: 1,
+      userId: '1',
       orderId: '12fe_asita',
       total: 2000,
       items: [],
@@ -211,11 +192,11 @@ describe('OrdersService', () => {
       .mockImplementation(() => Promise.resolve('confirmed'));
 
     const confirmResult = await ordersService.confirmOrder({
-      userId: 1,
+      userId: '1',
       orderId: '12fe_asita',
       total: 2000,
-      items: [],
       status: 'created',
+      items: [],
     });
 
     expect(result).toContain(confirmResult);

@@ -5,7 +5,7 @@ function ProductRow(props) {
   return (
     <tr className="order-product">
       <td>
-        <img src={props.item.image} />
+        <img src={props.item.image} alt="{props.item.name}" />
       </td>
       <td>{props.item.name}</td>
       <td>{props.item.price}</td>

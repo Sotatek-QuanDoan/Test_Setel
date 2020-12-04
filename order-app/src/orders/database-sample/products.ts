@@ -4,7 +4,7 @@ export default [
     name: 'IPhone 8',
     price: 500,
     image:
-      'https://cdn.cellphones.com.vn/media/catalog/product/cache/7/small_image/220x175/9df78eab33525d08d6e5fb8d27136e95/i/p/iphone_8_256gb.jpg',
+      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfaCbR8-6-5X4x8QNJ8hI8WedAzxsXNvPO2g&usqp=CAU',
     quantity: 15,
   },
   {
@@ -12,7 +12,7 @@ export default [
     name: 'IPhone 10',
     price: 800,
     image:
-      'https://cdn.cellphones.com.vn/media/catalog/product/cache/7/small_image/220x175/9df78eab33525d08d6e5fb8d27136e95/i/p/ip-xr-do.jpg',
+      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRxHjVdQiGLiWgrDWuWeOw82FKMutdBHYTshQ&usqp=CAU',
     quantity: 10,
   },
   {
@@ -20,7 +20,7 @@ export default [
     name: 'IPhone 12',
     price: 1200,
     image:
-      'https://cdn.cellphones.com.vn/media/catalog/product/cache/7/small_image/220x175/9df78eab33525d08d6e5fb8d27136e95/p/h/photo_2020-10-13_22-12-24.jpg_1_2.png',
+      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ48t1G46h3gHhRWkeu3AGMJ7hFPPvBepewPg&usqp=CAU',
     quantity: 50,
   },
   {
@@ -28,7 +28,7 @@ export default [
     name: 'Galaxy Note 10',
     price: 700,
     image:
-      'https://cdn.cellphones.com.vn/media/catalog/product/n/o/note_10_xanh_3.jpg',
+      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRdHRHcBDC6tNSimHQhQGV-VtJjaVW3HfJ5pg&usqp=CAU',
     quantity: 20,
   },
   {
@@ -36,7 +36,7 @@ export default [
     name: 'Galaxy Note 20',
     price: 1100,
     image:
-      'https://cdn.cellphones.com.vn/media/catalog/product/b/l/black_final.jpg',
+      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRaFMo3-KdjFLkanHnQkX-ko4HZrVLjF9wrRw&usqp=CAU',
     quantity: 5,
   },
 ];
