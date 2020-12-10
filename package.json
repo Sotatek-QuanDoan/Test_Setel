@@ -1,0 +1,18 @@
+{
+  "name": "setel-test",
+  "version": "1.0.0",
+  "description": "",
+  "main": " ",
+  "scripts": {
+    "format-lint-all": "for proj in payment-app order-app order-react; do cd $proj && npm run format && npm run lint && cd ..; done"
+  },
+  "repository": {
+    "type": "git",
+    "url": " "
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "husky": "^4.3.5"
+  }
+}

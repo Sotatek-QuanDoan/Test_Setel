@@ -19,6 +19,7 @@
     "web-vitals": "^0.2.4"
   },
   "scripts": {
+    "format": "pretty-quick --staged --pattern \"**/*.ts\"",
     "start": "react-scripts start",
     "build": "tsc",
     "test": "react-scripts test",
@@ -45,9 +46,11 @@
   },
   "devDependencies": {
     "@types/react": "^17.0.0",
+    "husky": "^4.3.5",
     "lint-staged": "^10.5.3",
-    "typescript": "^4.1.2",
-    "husky": "^4.3.5"
+    "prettier": "^2.2.1",
+    "pretty-quick": "^3.1.0",
+    "typescript": "^4.1.2"
   },
   "lint-staged": {
     "*.ts": [
