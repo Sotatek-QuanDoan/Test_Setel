@@ -33,9 +33,9 @@ services:
     restart: always
     ports:
       - 4000:4000
-    volumes:
-      - ./order-app/:/app/
-      - /app/node_modules/
+    # volumes:
+    #   - ./order-app/:/app/
+    #   - /app/node_modules/
     depends_on:
       - mongo
     networks:
@@ -46,9 +46,9 @@ services:
     restart: always
     ports:
       - 5000:5000
-    volumes:
-      - ./payment-app/:/app/
-      - /app/node_modules/
+    # volumes:
+    #   - ./payment-app/:/app/
+    #   - /app/node_modules/
     networks:
       - test_setel
 
@@ -57,9 +57,9 @@ services:
     restart: always
     ports:
       - 3000:3000
-    volumes:
-      - ./order-react/:/app/
-      - /app/node_modules/
+    # volumes:
+    #   - ./order-react/:/app/
+    #   - /app/node_modules/
     depends_on:
       - order-app
     networks:

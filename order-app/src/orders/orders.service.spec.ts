@@ -7,8 +7,9 @@ import { DocumentQuery, Model } from 'mongoose';
 import { constants } from './constants';
 import 'dotenv';
 import { EnumOrderStatus } from './enum/order_status.enum';
+import { getQueueToken } from '@nestjs/bull';
 
-const { ORDER_MODEL } = constants;
+const { ORDER_MODEL, ORDER_QUEUE } = constants;
 
 const orderArray = [
   {
@@ -92,6 +93,10 @@ describe('OrdersService', () => {
             countDocuments: jest.fn(),
             findOneAndUpdate: jest.fn(),
           },
+        },
+        {
+          provide: getQueueToken(ORDER_QUEUE),
+          useValue: {},
         },
       ],
     }).compile();

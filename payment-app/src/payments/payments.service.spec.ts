@@ -20,7 +20,7 @@ describe('Payment service', () => {
     jest.clearAllMocks();
   });
 
-  it('should return order status (cancelled or confirmed)', async () => {
+  it('should return order status (declined or confirmed)', async () => {
     const result = ['declined', 'confirmed'];
 
     const confirmResult = await paymentsService.confirmOrder({ orderId: '1' });
