@@ -4,5 +4,14 @@
 2. Access to the app
    http://localhost:3000
 
-3. Mongo-express (view database on browser)
+3. Api document (swagger)
+   http://localhost:4000/api
+
+4. Order app run at
+   http://localhost:4000
+
+5. Payment app run at
+   http://localhost:5000
+
+6. Mongo-express (view database on browser)
    http://localhost:8081
