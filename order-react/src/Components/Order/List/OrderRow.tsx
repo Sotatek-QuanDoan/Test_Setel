@@ -1,10 +1,16 @@
 import React from "react";
-import BtnViewOrder from "./BtnViewOrder";
-import BtnCancelOrder from "./BtnCancelOrder";
-import OrderStatus from "../Common/OrderStatus";
+import {BtnViewOrder} from "./BtnViewOrder";
+import {BtnCancelOrder} from "./BtnCancelOrder";
+import {OrderStatus} from "../Common/OrderStatus";
 import moment from "moment";
+import { Order } from '../../../interface/order.interface';
 
-function OrderRow(props) {
+interface Props {
+  order: Order,
+  cancel: any
+}
+
+export const OrderRow:React.FC<Props> = (props) => {
   const createdAt = moment(props.order.createdAt).format("YYYY-MM-DD hh:mm:ss");
 
   return (
@@ -26,5 +32,3 @@ function OrderRow(props) {
     </tr>
   );
 }
-
-export default OrderRow;

@@ -1,11 +1,16 @@
 import React from "react";
 import "./ProductRow.css";
+import { Product } from '../../../interface/product.interface';
 
-function ProductRow(props) {
+interface Props {
+  item: Product
+}
+
+export const ProductRow:React.FC<Props> = (props) => {
   return (
     <tr className="order-product">
       <td>
-        <img src={props.item.image} alt="{props.item.name}" />
+        <img src={props.item.image} alt={props.item.name} />
       </td>
       <td>{props.item.name}</td>
       <td>{props.item.price}</td>
@@ -14,5 +19,3 @@ function ProductRow(props) {
     </tr>
   );
 }
-
-export default ProductRow;

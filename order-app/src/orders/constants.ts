@@ -1,3 +1,3 @@
-export default {
+export const constants = {
   ORDER_MODEL: 'Order',
 };

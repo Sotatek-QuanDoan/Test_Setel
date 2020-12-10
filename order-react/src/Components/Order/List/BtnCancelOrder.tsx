@@ -1,6 +1,13 @@
 import React from "react";
+import { EnumOrderStatus } from '../../../enum/order_status.enum';
 
-function btnCancelOrder(props) {
+interface Props {
+  id: string,
+  status: EnumOrderStatus,
+  cancel: any
+}
+
+export const BtnCancelOrder:React.FC<Props> = (props) => {
   let buttonCancel = (
     <button
       className="btn btn-small btn-danger"
@@ -14,11 +21,9 @@ function btnCancelOrder(props) {
     </button>
   );
 
-  if (["cancelled"].indexOf(props.status) > -1) {
+  if ([EnumOrderStatus.ORDER_CANCELLED, EnumOrderStatus.ORDER_DELIVERED].indexOf(props.status) > -1) {
     buttonCancel = <div></div>;
   }
 
   return buttonCancel;
 }
-
-export default btnCancelOrder;

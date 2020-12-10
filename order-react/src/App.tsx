@@ -1,11 +1,12 @@
 import "./App.css";
-import Header from "./Components/Header/Header";
-import Order from "./Components/Order/Order";
-import Shop from "./Components/Shop/Shop";
+import { Header } from "./Components/Header/Header";
+import { Order } from "./Components/Order/Order";
+import { Shop } from "./Components/Shop/Shop";
 import { BrowserRouter as Router, Route } from "react-router-dom";
-import OrderDetail from "./Components/Order/Detail/OrderDetail";
+import { OrderDetail } from "./Components/Order/Detail/OrderDetail";
+import React from "react";
 
-function App() {
+const App:React.FC = () => {
   return (
     <Router>
       <div className="container">

@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { OrdersController } from './orders.controller';
 import { OrdersService } from './orders.service';
 import { BodyOrderDto } from './dto/body-order.dto';
+import { EnumOrderStatus } from './enum/order_status.enum';
 
 describe('Order Controller', () => {
   let controller: OrdersController;
@@ -11,21 +12,21 @@ describe('Order Controller', () => {
       userId: '1',
       orderId: '12345',
       total: 1000,
-      status: 'cancelled',
+      status: EnumOrderStatus.ORDER_CANCELLED,
       items: [],
     },
     {
       userId: '1',
       orderId: '232323',
       total: 2200,
-      status: 'delivered',
+      status: EnumOrderStatus.ORDER_DELIVERED,
       items: [],
     },
   ];
 
   const limit = 5;
   const countOrders = 15;
-  const totalPage = Math.ceil(15 / limit);
+  const totalPage = Math.ceil(countOrders / limit);
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -34,18 +35,18 @@ describe('Order Controller', () => {
         {
           provide: OrdersService,
           useValue: {
-            findAllByUser: jest
-              .fn()
-              .mockImplementation(() => Promise.resolve(arrOrders)),
-            countAllByUser: jest
-              .fn()
-              .mockImplementation(() => Promise.resolve(countOrders)),
+            findAllByUser: jest.fn().mockImplementation(() =>
+              Promise.resolve({
+                totalPage,
+                list: arrOrders,
+              }),
+            ),
             findById: jest.fn().mockImplementation(() =>
               Promise.resolve({
                 userId: '1',
                 orderId: '12345',
                 total: 1000,
-                status: 'cancelled',
+                status: EnumOrderStatus.ORDER_CANCELLED,
                 items: [],
               }),
             ),
@@ -54,7 +55,7 @@ describe('Order Controller', () => {
                 userId: '1',
                 orderId: '33333',
                 total: 1300,
-                status: 'created',
+                status: EnumOrderStatus.ORDER_CREATED,
                 items: [
                   {
                     id: 1,
@@ -66,14 +67,24 @@ describe('Order Controller', () => {
                 ],
               }),
             ),
-            updateStatus: jest
-              .fn()
-              .mockImplementation(() => Promise.resolve({ nModified: 1 })),
-            confirmOrder: jest
-              .fn()
-              .mockImplementation(() =>
-                Promise.resolve({ orderId: '1', status: 'confirmed' }),
-              ),
+            cancelOrder: jest.fn().mockImplementation(() =>
+              Promise.resolve({
+                userId: '1',
+                orderId: '12345',
+                total: 1000,
+                status: EnumOrderStatus.ORDER_CANCELLED,
+                items: [],
+              }),
+            ),
+            confirmOrder: jest.fn().mockImplementation(() =>
+              Promise.resolve({
+                userId: '1',
+                orderId: '1',
+                total: 1000,
+                status: EnumOrderStatus.ORDER_CONFIRMED,
+                items: [],
+              }),
+            ),
           },
         },
       ],
@@ -100,7 +111,7 @@ describe('Order Controller', () => {
         userId: '1',
         orderId: '12345',
         total: 1000,
-        status: 'cancelled',
+        status: EnumOrderStatus.ORDER_CANCELLED,
         items: [],
       });
     });
@@ -108,9 +119,10 @@ describe('Order Controller', () => {
   describe('create', () => {
     it('should create a new order', () => {
       const newOrder: BodyOrderDto = {
+        userId: '1',
         order: [
           {
-            id: 1,
+            id: '1',
             quantity: 2,
           },
         ],
@@ -119,7 +131,7 @@ describe('Order Controller', () => {
         userId: '1',
         orderId: '33333',
         total: 1300,
-        status: 'created',
+        status: EnumOrderStatus.ORDER_CREATED,
         items: [
           {
             id: 1,
@@ -134,9 +146,13 @@ describe('Order Controller', () => {
   });
   describe('cancelOrder', () => {
     it('should update order status to "cancelled"', () => {
-      expect(controller.cancelOrder('1')).resolves.toEqual(
-        'Cancel order success.',
-      );
+      expect(controller.cancelOrder('1')).resolves.toEqual({
+        userId: '1',
+        orderId: '12345',
+        total: 1000,
+        status: EnumOrderStatus.ORDER_CANCELLED,
+        items: [],
+      });
     });
   });
 });

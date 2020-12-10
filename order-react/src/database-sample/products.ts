@@ -1,6 +1,8 @@
-export default [
+import { Product } from "../interface/product.interface";
+
+export const products: Product[] = [
   {
-    id: 1,
+    id: "1",
     name: "IPhone 8",
     price: 500,
     image:
@@ -8,7 +10,7 @@ export default [
     quantity: 15,
   },
   {
-    id: 2,
+    id: "2",
     name: "IPhone 10",
     price: 800,
     image:
@@ -16,7 +18,7 @@ export default [
     quantity: 10,
   },
   {
-    id: 3,
+    id: "3",
     name: "IPhone 12",
     price: 1200,
     image:
@@ -24,7 +26,7 @@ export default [
     quantity: 50,
   },
   {
-    id: 4,
+    id: "4",
     name: "Galaxy Note 10",
     price: 700,
     image:
@@ -32,7 +34,7 @@ export default [
     quantity: 20,
   },
   {
-    id: 5,
+    id: "5",
     name: "Galaxy Note 20",
     price: 1100,
     image:

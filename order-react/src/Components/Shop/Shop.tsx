@@ -1,26 +1,27 @@
 import React, { useState } from "react";
-import products from "../../database-sample/products";
+import { products } from "../../database-sample/products";
 import ShopItem from "./ShopItem";
 import axios from "axios";
 import CartItem from "./CartItem";
 import "dotenv";
+import { Product } from '../../interface/product.interface';
 
 const { REACT_APP_ORDER_API_URL } = process.env;
 
-function Shop() {
-  const [cart, setCart] = useState([]);
+export const Shop:React.FC = () => {
+  const [cart, setCart] = useState([] as any);
   const [totalCart, setTotalCart] = useState(0);
 
-  function addToCart(id) {
-    const findInProducts = products.find((p) => p.id === id);
+  function addToCart(id: string) {
+    const findInProducts = products.find((p: Product) => p.id === id);
     if (!findInProducts) return;
-    const findInCart = cart.find((p) => p.id === id);
+    const findInCart = cart.find((p: Product) => p.id === id);
 
-    let newCart = [...cart];
-    let newTotalCart = totalCart;
+    let newCart: Product[] = [...cart];
+    let newTotalCart: number = totalCart;
 
     if (findInCart) {
-      newCart = cart.map((o) => {
+      newCart = cart.map((o: Product) => {
         if (o.id === id) return { ...o, quantity: ++o.quantity };
         return o;
       });
@@ -35,13 +36,13 @@ function Shop() {
     setTotalCart(newTotalCart);
   }
 
-  function removeFromCart(id) {
-    const findInProducts = products.find((p) => p.id === id);
+  function removeFromCart(id: string) {
+    const findInProducts = products.find((p: Product) => p.id === id);
     if (!findInProducts) return;
-    const findInCart = cart.find((p) => p.id === id);
+    const findInCart = cart.find((p: Product) => p.id === id);
 
     if (findInCart) {
-      let newCart = cart.filter((o) => o.id !== id);
+      let newCart = cart.filter((o: Product) => o.id !== id);
       let newTotalCart = totalCart - findInCart.quantity * findInCart.price;
 
       setCart(newCart);
@@ -52,18 +53,16 @@ function Shop() {
   function placeOrder() {
     axios
       .post(`${REACT_APP_ORDER_API_URL}/orders`, {
+        userId: '1',
         order: cart,
       })
-      .then((response) => {
+      .then((response: any) => {
         if (response.status === 201) {
           alert("Place order success!");
 
           setCart([]);
           setTotalCart(0);
         }
-      })
-      .catch(function (error) {
-        console.log(error);
       });
   }
 
@@ -76,7 +75,7 @@ function Shop() {
           <h4>List products</h4>
           <div className="row">
             {products &&
-              products.map((o, i) => (
+              products.map((o: Product, i: number) => (
                 <ShopItem item={o} key={i} addToCart={() => addToCart(o.id)} />
               ))}
           </div>
@@ -118,5 +117,3 @@ function Shop() {
     </div>
   );
 }
-
-export default Shop;

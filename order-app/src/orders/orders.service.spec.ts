@@ -4,8 +4,9 @@ import { getModelToken } from '@nestjs/mongoose';
 import { Order } from './interfaces/order.interface';
 import { createMock } from '@golevelup/nestjs-testing';
 import { DocumentQuery, Model } from 'mongoose';
-import constants from './constants';
+import { constants } from './constants';
 import 'dotenv';
+import { EnumOrderStatus } from './enum/order_status.enum';
 
 const { ORDER_MODEL } = constants;
 
@@ -14,14 +15,14 @@ const orderArray = [
     userId: '1',
     orderId: '12345',
     total: 1000,
-    status: 'cancelled',
+    status: EnumOrderStatus.ORDER_CANCELLED,
     items: [],
   },
   {
     userId: '1',
     orderId: '232323',
     total: 2200,
-    status: 'delivered',
+    status: EnumOrderStatus.ORDER_DELIVERED,
     items: [],
   },
 ];
@@ -30,20 +31,20 @@ const mockOrderDoc: (mock?: {
   userId?: string;
   orderId?: string;
   total?: number;
-  status?: string;
+  status?: EnumOrderStatus;
   items?: any[];
 }) => Partial<Order> = (mock?: {
   userId: string;
   orderId: string;
   total: number;
-  status: string;
+  status: EnumOrderStatus;
   items: any[];
 }) => {
   return {
     userId: (mock && mock.userId) || '1',
     orderId: (mock && mock.orderId) || 'a shortid',
     total: (mock && mock.total) || 1000,
-    status: (mock && mock.status) || 'confirmed',
+    status: (mock && mock.status) || EnumOrderStatus.ORDER_CONFIRMED,
     items: (mock && mock.items) || [],
   };
 };
@@ -53,21 +54,21 @@ const orderDocArray = [
     userId: '1',
     orderId: '12345',
     total: 1000,
-    status: 'cancelled',
+    status: EnumOrderStatus.ORDER_CANCELLED,
     items: [],
   }),
   mockOrderDoc({
     userId: '1',
     orderId: '232323',
     total: 2200,
-    status: 'delivered',
+    status: EnumOrderStatus.ORDER_DELIVERED,
     items: [],
   }),
 ];
 
 describe('OrdersService', () => {
   let ordersService: OrdersService;
-  let model: Model<Order>;
+  let model: Model<any>;
   jest.mock('axios');
 
   beforeEach(async () => {
@@ -88,15 +89,15 @@ describe('OrdersService', () => {
             exec: jest.fn(),
             save: jest.fn(),
             updateOne: jest.fn(),
-            skip: jest.fn(),
             countDocuments: jest.fn(),
+            findOneAndUpdate: jest.fn(),
           },
         },
       ],
     }).compile();
 
     ordersService = module.get<OrdersService>(OrdersService);
-    model = module.get<Model<Order>>(getModelToken('Order'));
+    model = module.get<Model<any>>(getModelToken('Order'));
   });
 
   it('should be defined', () => {
@@ -107,31 +108,23 @@ describe('OrdersService', () => {
     jest.clearAllMocks();
   });
 
-  it('should return count orders number', async () => {
-    const countNumber = 15;
-    jest.spyOn(model, 'countDocuments').mockResolvedValueOnce(countNumber);
-
-    const countOrders = await ordersService.countAllByUser('1');
-    expect(countOrders).toEqual(countNumber);
-  });
-
   it('should return all orders', async () => {
     jest.spyOn(model, 'find').mockReturnValue({
       exec: jest.fn().mockResolvedValueOnce(orderDocArray),
     } as any);
 
-    const orders = await ordersService.findAllByUser('1', 0, 10);
-    expect(orders).toEqual(orderArray);
+    const orders = await ordersService.findAllByUser('1', 1);
+    expect(orders.list).toEqual(orderArray);
   });
 
   it('should get an order by id', async () => {
     jest.spyOn(model, 'findOne').mockReturnValueOnce(
-      createMock<DocumentQuery<Order, Order, unknown>>({
+      createMock<DocumentQuery<Order, any, unknown>>({
         exec: jest.fn().mockResolvedValueOnce(
           mockOrderDoc({
             orderId: '12345',
             total: 1000,
-            status: 'cancelled',
+            status: EnumOrderStatus.ORDER_CANCELLED,
             items: [],
           }),
         ),
@@ -140,7 +133,7 @@ describe('OrdersService', () => {
     const findMockCat = mockOrderDoc({
       orderId: '12345',
       total: 1000,
-      status: 'cancelled',
+      status: EnumOrderStatus.ORDER_CANCELLED,
       items: [],
     });
     const foundOrder = await ordersService.findById('12345');
@@ -148,19 +141,35 @@ describe('OrdersService', () => {
   });
 
   it('should create new order', async () => {
-    jest.spyOn(model, 'create').mockResolvedValueOnce({
+    jest.spyOn(ordersService, 'create').mockResolvedValueOnce({
       userId: '1',
       orderId: '12fe_asita',
       total: 2000,
-      status: 'created',
-      items: [],
+      status: EnumOrderStatus.ORDER_CREATED,
+      items: [
+        {
+          id: '1',
+          quantity: 1,
+          name: 'product name 1',
+          image: 'url_image_1.png',
+          price: 500,
+        },
+        {
+          id: '2',
+          quantity: 2,
+          name: 'product name 2',
+          image: 'url_image_2.png',
+          price: 800,
+        },
+      ],
     } as any); // dreaded as any, but it can't be helped
 
     const newOrder = await ordersService.create({
       userId: '1',
-      orderId: '12fe_asita',
-      total: 2000,
-      items: [],
+      order: [
+        { id: '1', quantity: 1 },
+        { id: '2', quantity: 2 },
+      ],
     });
 
     expect(newOrder).toEqual(
@@ -168,34 +177,68 @@ describe('OrdersService', () => {
         userId: '1',
         orderId: '12fe_asita',
         total: 2000,
-        status: 'created',
-        items: [],
+        status: EnumOrderStatus.ORDER_CREATED,
+        items: [
+          {
+            id: '1',
+            quantity: 1,
+            name: 'product name 1',
+            image: 'url_image_1.png',
+            price: 500,
+          },
+          {
+            id: '2',
+            quantity: 2,
+            name: 'product name 2',
+            image: 'url_image_2.png',
+            price: 800,
+          },
+        ],
       }),
     );
+  });
+
+  it('should cancel order and return order cancelled', async () => {
+    jest.spyOn(model, 'findOneAndUpdate').mockResolvedValueOnce({
+      userId: '1',
+      orderId: '12fe_asita',
+      total: 2000,
+      status: EnumOrderStatus.ORDER_CANCELLED,
+      items: [],
+    });
+    const orderCancelled = await ordersService.cancelOrder('12fe_asita');
+
+    expect(orderCancelled.orderId).toEqual('12fe_asita');
+    expect(orderCancelled.status).toEqual(EnumOrderStatus.ORDER_CANCELLED);
   });
 
   it('should update an order status successfully', async () => {
     jest.spyOn(model, 'updateOne').mockResolvedValueOnce({ nModified: 1 });
     const updatedOrderStatus = await ordersService.updateStatus({
       id: '12345',
-      status: 'cancelled',
+      status: EnumOrderStatus.ORDER_CANCELLED,
     });
 
     expect(updatedOrderStatus).toEqual({ nModified: 1 });
   });
 
   it('should return an order status (declined or delivered)', async () => {
-    const result = ['declined', 'confirmed'];
+    const result: EnumOrderStatus[] = [
+      EnumOrderStatus.ORDER_DECLINED,
+      EnumOrderStatus.ORDER_CONFIRMED,
+    ];
 
     jest
       .spyOn(ordersService, 'confirmOrder')
-      .mockImplementation(() => Promise.resolve('confirmed'));
+      .mockImplementation(() =>
+        Promise.resolve(EnumOrderStatus.ORDER_CONFIRMED),
+      );
 
     const confirmResult = await ordersService.confirmOrder({
       userId: '1',
       orderId: '12fe_asita',
       total: 2000,
-      status: 'created',
+      status: EnumOrderStatus.ORDER_CREATED,
       items: [],
     });
 

@@ -1,7 +1,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-function btnViewOrder(props) {
+interface Props {
+  od_link: string
+}
+
+export const BtnViewOrder:React.FC<Props> = (props) => {
   return (
     <Link to={props.od_link}>
       <button className="btn btn-small btn-info">
@@ -10,5 +14,3 @@ function btnViewOrder(props) {
     </Link>
   );
 }
-
-export default btnViewOrder;

@@ -1,7 +1,11 @@
 import React from "react";
-import ListOrders from "./List/ListOrders";
+import {ListOrders} from "./List/ListOrders";
 
-function Order(props) {
+interface Props {
+  match: any
+}
+
+export const Order:React.FC<Props> = (props) => {
   return (
     <div className="row">
       <ListOrders
@@ -11,5 +15,3 @@ function Order(props) {
     </div>
   );
 }
-
-export default Order;

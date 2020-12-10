@@ -2,15 +2,24 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { OrdersModule } from './orders/orders.module';
 import { MongooseModule } from '@nestjs/mongoose';
-import 'dotenv';
+import * as dotenv from 'dotenv';
+import { BullModule } from '@nestjs/bull';
 
-const MONGO_URI = process.env.MONGO_URI || 'mongodb://mongo:27017/nestdb';
+dotenv.config();
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    MongooseModule.forRoot(MONGO_URI),
+    MongooseModule.forRoot(
+      process.env.MONGO_URI || 'mongodb://localhost:27017/nestdb',
+    ),
     OrdersModule,
+    BullModule.forRoot({
+      redis: {
+        host: process.env.REDIS_HOST || 'localhost',
+        port: parseInt(process.env.REDIS_PORT) || 6379,
+      },
+    }),
   ],
   controllers: [],
   providers: [],

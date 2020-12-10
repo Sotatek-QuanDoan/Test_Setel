@@ -1,27 +1,32 @@
 import React from "react";
+import { EnumOrderStatus } from '../../../enum/order_status.enum';
 
-function OrderStatus(props) {
-  let labelOrderStatus = "";
+interface Props {
+  status: string,
+}
+
+export const OrderStatus:React.FC<Props> = (props) => {
+  let labelOrderStatus = <span></span>;
   switch (props.status) {
-    case "created":
+    case EnumOrderStatus.ORDER_CREATED:
       labelOrderStatus = (
         <span className="badge badge-info">{props.status}</span>
       );
       break;
 
-    case "confirmed":
+    case EnumOrderStatus.ORDER_CONFIRMED:
       labelOrderStatus = (
         <span className="badge badge-warning">{props.status}</span>
       );
       break;
 
-    case "delivered":
+    case EnumOrderStatus.ORDER_DELIVERED:
       labelOrderStatus = (
         <span className="badge badge-success">{props.status}</span>
       );
       break;
 
-    case "cancelled":
+    case EnumOrderStatus.ORDER_CANCELLED:
       labelOrderStatus = (
         <span className="badge badge-danger">{props.status}</span>
       );
@@ -33,5 +38,3 @@ function OrderStatus(props) {
 
   return <span>{labelOrderStatus}</span>;
 }
-
-export default OrderStatus;

@@ -1,8 +1,13 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-function Pagination(props) {
-  let pagiItems = [];
+interface Props {
+  currentPage: number;
+  totalPage: number;
+}
+
+export const Pagination:React.FC<Props> = (props) => {
+  let pagiItems = [] as any;
 
   if (props.currentPage > 1) {
     pagiItems.push(
@@ -17,8 +22,8 @@ function Pagination(props) {
   for (let i = 1; i <= props.totalPage; i++) {
     const classActive = i === props.currentPage ? "active" : "";
     pagiItems.push(
-      <li className="page-item" key={i}>
-        <Link className={`page-link ${classActive}`} to={`/orders/${i}`}>
+      <li className={`page-item ${classActive}`} key={i}>
+        <Link className="page-link" to={`/orders/${i}`}>
           {i}
         </Link>
       </li>
@@ -40,6 +45,4 @@ function Pagination(props) {
       <ul className="pagination">{pagiItems.map((elem) => elem)}</ul>
     </nav>
   );
-}
-
-export default Pagination;
+};

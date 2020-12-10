@@ -1,10 +1,16 @@
 import React from "react";
+import { Product } from '../../interface/product.interface';
 
-function CartItem(props) {
+interface Props {
+  item: Product,
+  removeFromCart: any
+}
+
+const CartItem:React.FC<Props> = (props) => {
   return (
     <tr>
       <td>
-        <img src={props.item.image} className="img-fluid" alt="" />
+        <img src={props.item.image} className="img-fluid" alt={props.item.name} />
         <br />
         {props.item.name}
       </td>

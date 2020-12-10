@@ -1,33 +1,36 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import moment from "moment";
-import ProductRow from "./ProductRow";
-import OrderStatus from "../Common/OrderStatus";
+import {ProductRow} from "./ProductRow";
+import {OrderStatus} from "../Common/OrderStatus";
 import "dotenv";
 
 const { REACT_APP_ORDER_API_URL } = process.env;
 
-function OrderDetail(props) {
-  const [order, setOrder] = useState({});
+interface Props {
+  match: any
+}
+
+export const OrderDetail:React.FC<Props> = (props) => {
+  const [order, setOrder] = useState({} as any);
+
+  const orderId = props.match.params.id;
 
   useEffect(() => {
-    const id = props.match.params.id;
+    if (orderId) {
+      getOrderDetail(orderId);
+    }
+  }, [orderId]);
 
+  function getOrderDetail(id) {
     axios
       .get(`${REACT_APP_ORDER_API_URL}/orders/${id}`)
       .then((response) => {
         if (response.status === 200) {
           setOrder(response.data);
         }
-      })
-      .catch(function (error) {
-        // handle error
-        console.log(error);
-      })
-      .then(function () {
-        // always executed
       });
-  });
+  }
 
   const createdAt = moment(order.createdAt).format("YYYY-MM-DD hh:mm:ss");
 
@@ -58,7 +61,7 @@ function OrderDetail(props) {
               {order.items &&
                 order.items.map((o, i) => <ProductRow item={o} key={i} />)}
               <tr>
-                <td colSpan="4" className="text-right">
+                <td colSpan={4} className="text-right">
                   <b>Total</b>
                 </td>
                 <td>
@@ -72,5 +75,3 @@ function OrderDetail(props) {
     </div>
   );
 }
-
-export default OrderDetail;
