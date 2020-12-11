@@ -8,8 +8,12 @@ export class PaymentsController {
   constructor(private readonly paymentsService: PaymentsService) {}
 
   @Post()
-  confirmOrder(@Body() body: OrderDto) {
+  async confirmOrder(@Body() body: OrderDto) {
     this.logger.verbose(`Confirm payment status of order "${body.orderId}"`);
-    return this.paymentsService.confirmOrder(body);
+    const result = await this.paymentsService.confirmOrder(body);
+    this.logger.verbose(
+      `Payment status of order "${body.orderId}": \n "${result}"`,
+    );
+    return result;
   }
 }

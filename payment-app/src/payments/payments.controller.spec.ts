@@ -1,5 +1,6 @@
 import { PaymentsController } from './payments.controller';
 import { PaymentsService } from './payments.service';
+import { EnumOrderStatus } from './enum/order_status.enum';
 
 describe('PaymentsController', () => {
   let paymentsController: PaymentsController;
@@ -12,7 +13,7 @@ describe('PaymentsController', () => {
 
   describe('confirmOrder', () => {
     test('should return an object with status property is confirmed or declined', async () => {
-      const result = 'confirmed';
+      const result = EnumOrderStatus.ORDER_CONFIRMED;
 
       jest
         .spyOn(paymentsService, 'confirmOrder')

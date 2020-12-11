@@ -19,7 +19,7 @@ import { products } from '../database-sample/products';
 import { Queue } from 'bull';
 import { InjectQueue } from '@nestjs/bull';
 
-const { ORDER_MODEL } = constants;
+const { ORDER_MODEL, ORDER_QUEUE } = constants;
 
 @Injectable()
 export class OrdersService {
@@ -27,7 +27,7 @@ export class OrdersService {
   constructor(
     @InjectModel(ORDER_MODEL)
     private readonly orderModel: Model<any>,
-    @InjectQueue('order') private orderQueue: Queue,
+    @InjectQueue(ORDER_QUEUE) private orderQueue: Queue,
   ) {}
 
   async create(body: BodyOrderDto): Promise<Order> {
@@ -88,7 +88,9 @@ export class OrdersService {
     }
 
     // call payment confirm
-    const responsePaymentConfirm = await this.confirmOrder(newOrder);
+    const responsePaymentConfirm: EnumOrderStatus = await this.confirmOrder(
+      newOrder,
+    );
 
     if (responsePaymentConfirm === EnumOrderStatus.ORDER_CONFIRMED) {
       const confirmedOrder = await this.updateStatus({
@@ -124,6 +126,9 @@ export class OrdersService {
         EnumOrderStatus.ORDER_DELIVERED,
       ].indexOf(order.status) > -1
     ) {
+      this.logger.error(
+        `Failed to cancel order: "${id}. The order status: "${order.status}".`,
+      );
       throw new InternalServerErrorException(
         `You can not cancel order cancelled or delivered.`,
       );
@@ -190,7 +195,7 @@ export class OrdersService {
     return this.orderModel.findOne({ orderId: id }).exec();
   }
 
-  async confirmOrder(order: Order): Promise<string> {
+  async confirmOrder(order: Order): Promise<EnumOrderStatus> {
     const response = await axios.post(
       `${process.env.PAYMENT_BASE_URL}/payment`,
       order,

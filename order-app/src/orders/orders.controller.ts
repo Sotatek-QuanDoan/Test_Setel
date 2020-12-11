@@ -24,7 +24,7 @@ export class OrdersController {
     this.logger.verbose(`Getting orders of userId: "${uid}".`);
     const orders = await this.ordersService.findAllByUser(uid, page);
     this.logger.verbose(
-      `Return orders of userId: "${uid}", page: ${page}. \n data: ${orders.list}`,
+      `Return orders of userId: "${uid}", page: ${page}. response: \n ${orders.list}`,
     );
     return orders;
   }
@@ -33,17 +33,17 @@ export class OrdersController {
   async find(@Param('id') id: string): Promise<Order> {
     this.logger.verbose(`Getting the order with orderId: "${id}".`);
     const order = await this.ordersService.findById(id);
-    this.logger.verbose(`Return order "${id}". \n data: ${order}`);
+    this.logger.verbose(`Return order "${id}". response: \n ${order}`);
     return order;
   }
 
   @Post()
   async create(@Body() body: BodyOrderDto): Promise<Order> {
     this.logger.verbose(
-      `Creating a new order with data: ${JSON.stringify(body)}.`,
+      `Creating a new order with input: \n ${JSON.stringify(body)}.`,
     );
     const order = await this.ordersService.create(body);
-    this.logger.verbose(`Create new order successful. \n data: ${order}`);
+    this.logger.verbose(`Create new order successful. response: \n ${order}`);
     return order;
   }
 
@@ -51,7 +51,9 @@ export class OrdersController {
   async cancelOrder(@Param('id') id: string): Promise<Order> {
     this.logger.verbose(`Canceling an order with orderId: "${id}".`);
     const order = await this.ordersService.cancelOrder(id);
-    this.logger.verbose(`Cancel order "${id}" successful. \n data: ${order}`);
+    this.logger.verbose(
+      `Cancel order "${id}" successful. response: \n ${order}`,
+    );
     return order;
   }
 }

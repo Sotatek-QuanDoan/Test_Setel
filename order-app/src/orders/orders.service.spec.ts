@@ -102,7 +102,7 @@ describe('OrdersService', () => {
     }).compile();
 
     ordersService = module.get<OrdersService>(OrdersService);
-    model = module.get<Model<any>>(getModelToken('Order'));
+    model = module.get<Model<any>>(getModelToken(ORDER_MODEL));
   });
 
   it('should be defined', () => {

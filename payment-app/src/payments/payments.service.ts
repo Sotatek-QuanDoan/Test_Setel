@@ -4,7 +4,7 @@ import { EnumOrderStatus } from './enum/order_status.enum';
 
 @Injectable()
 export class PaymentsService {
-  async confirmOrder(order: OrderDto): Promise<string> {
+  async confirmOrder(order: OrderDto): Promise<EnumOrderStatus> {
     // Process order logic here
 
     // Mockup random result

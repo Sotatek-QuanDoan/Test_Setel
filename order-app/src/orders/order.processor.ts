@@ -2,8 +2,10 @@ import { Processor, Process } from '@nestjs/bull';
 import { Job } from 'bull';
 import { OrdersService } from './orders.service';
 import { EnumOrderStatus } from './enum/order_status.enum';
+import { constants } from './constants';
 
-@Processor('order')
+const { ORDER_QUEUE } = constants;
+@Processor(ORDER_QUEUE)
 export class OrderProcessor {
   constructor(private readonly ordersService: OrdersService) {}
 

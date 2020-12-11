@@ -5,12 +5,15 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { orderSchema } from './schemas/order.schema';
 import { BullModule } from '@nestjs/bull';
 import { OrderProcessor } from './order.processor';
+import { constants } from './constants';
+
+const { ORDER_MODEL, ORDER_QUEUE } = constants;
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: 'Order', schema: orderSchema }]),
+    MongooseModule.forFeature([{ name: ORDER_MODEL, schema: orderSchema }]),
     BullModule.registerQueue({
-      name: 'order',
+      name: ORDER_QUEUE,
     }),
   ],
   controllers: [OrdersController],
