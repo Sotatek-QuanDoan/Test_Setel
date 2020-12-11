@@ -14,17 +14,58 @@ const { ORDER_MODEL, ORDER_QUEUE } = constants;
 const orderArray = [
   {
     userId: '1',
-    orderId: '12345',
+    orderId: '1111111',
     total: 1000,
-    status: EnumOrderStatus.ORDER_CANCELLED,
-    items: [],
+    status: EnumOrderStatus.ORDER_CREATED,
+    items: [
+      {
+        id: '1',
+        quantity: 1,
+        name: 'product name 1',
+        image: 'url_image_1.png',
+        price: 500,
+      },
+    ],
+    createdAt: '2020-12-04T05:54:43.586Z',
   },
   {
     userId: '1',
-    orderId: '232323',
+    orderId: '2222222',
     total: 2200,
     status: EnumOrderStatus.ORDER_DELIVERED,
-    items: [],
+    items: [
+      {
+        id: '1',
+        quantity: 1,
+        name: 'product name 1',
+        image: 'url_image_1.png',
+        price: 500,
+      },
+      {
+        id: '2',
+        quantity: 1,
+        name: 'product name 2',
+        image: 'url_image_2.png',
+        price: 700,
+      },
+    ],
+    createdAt: '2020-12-04T05:54:43.586Z',
+  },
+  {
+    userId: '1',
+    orderId: '333333',
+    total: 3200,
+    status: EnumOrderStatus.ORDER_DELIVERED,
+    items: [
+      {
+        id: '3',
+        quantity: 2,
+        name: 'product name 3',
+        image: 'url_image_3.png',
+        price: 900,
+      },
+    ],
+    createdAt: '2020-12-04T05:54:43.586Z',
   },
 ];
 
@@ -34,12 +75,14 @@ const mockOrderDoc: (mock?: {
   total?: number;
   status?: EnumOrderStatus;
   items?: any[];
+  createdAt?: string;
 }) => Partial<Order> = (mock?: {
   userId: string;
   orderId: string;
   total: number;
   status: EnumOrderStatus;
   items: any[];
+  createdAt: string;
 }) => {
   return {
     userId: (mock && mock.userId) || '1',
@@ -47,23 +90,65 @@ const mockOrderDoc: (mock?: {
     total: (mock && mock.total) || 1000,
     status: (mock && mock.status) || EnumOrderStatus.ORDER_CONFIRMED,
     items: (mock && mock.items) || [],
+    createdAt: (mock && mock.createdAt) || '2020-12-04T05:54:43.586Z',
   };
 };
 
 const orderDocArray = [
   mockOrderDoc({
     userId: '1',
-    orderId: '12345',
+    orderId: '1111111',
     total: 1000,
-    status: EnumOrderStatus.ORDER_CANCELLED,
-    items: [],
+    status: EnumOrderStatus.ORDER_CREATED,
+    items: [
+      {
+        id: '1',
+        quantity: 1,
+        name: 'product name 1',
+        image: 'url_image_1.png',
+        price: 500,
+      },
+    ],
+    createdAt: '2020-12-04T05:54:43.586Z',
   }),
   mockOrderDoc({
     userId: '1',
-    orderId: '232323',
+    orderId: '2222222',
     total: 2200,
     status: EnumOrderStatus.ORDER_DELIVERED,
-    items: [],
+    items: [
+      {
+        id: '1',
+        quantity: 1,
+        name: 'product name 1',
+        image: 'url_image_1.png',
+        price: 500,
+      },
+      {
+        id: '2',
+        quantity: 1,
+        name: 'product name 2',
+        image: 'url_image_2.png',
+        price: 700,
+      },
+    ],
+    createdAt: '2020-12-04T05:54:43.586Z',
+  }),
+  mockOrderDoc({
+    userId: '1',
+    orderId: '333333',
+    total: 3200,
+    status: EnumOrderStatus.ORDER_DELIVERED,
+    items: [
+      {
+        id: '3',
+        quantity: 2,
+        name: 'product name 3',
+        image: 'url_image_3.png',
+        price: 900,
+      },
+    ],
+    createdAt: '2020-12-04T05:54:43.586Z',
   }),
 ];
 
@@ -125,82 +210,25 @@ describe('OrdersService', () => {
   it('should get an order by id', async () => {
     jest.spyOn(model, 'findOne').mockReturnValueOnce(
       createMock<DocumentQuery<Order, any, unknown>>({
-        exec: jest.fn().mockResolvedValueOnce(
-          mockOrderDoc({
-            orderId: '12345',
-            total: 1000,
-            status: EnumOrderStatus.ORDER_CANCELLED,
-            items: [],
-          }),
-        ),
+        exec: jest.fn().mockResolvedValueOnce(mockOrderDoc(orderArray[0])),
       }),
     );
-    const findMockCat = mockOrderDoc({
-      orderId: '12345',
-      total: 1000,
-      status: EnumOrderStatus.ORDER_CANCELLED,
-      items: [],
-    });
+    const findMockCat = mockOrderDoc(orderArray[0]);
     const foundOrder = await ordersService.findById('12345');
     expect(foundOrder).toEqual(findMockCat);
   });
 
   it('should create new order', async () => {
-    jest.spyOn(ordersService, 'create').mockResolvedValueOnce({
-      userId: '1',
-      orderId: '12fe_asita',
-      total: 2000,
-      status: EnumOrderStatus.ORDER_CREATED,
-      items: [
-        {
-          id: '1',
-          quantity: 1,
-          name: 'product name 1',
-          image: 'url_image_1.png',
-          price: 500,
-        },
-        {
-          id: '2',
-          quantity: 2,
-          name: 'product name 2',
-          image: 'url_image_2.png',
-          price: 800,
-        },
-      ],
-    } as any); // dreaded as any, but it can't be helped
+    jest
+      .spyOn(ordersService, 'create')
+      .mockResolvedValueOnce(orderArray[0] as any); // dreaded as any, but it can't be helped
 
     const newOrder = await ordersService.create({
       userId: '1',
-      order: [
-        { id: '1', quantity: 1 },
-        { id: '2', quantity: 2 },
-      ],
+      order: [{ id: '1', quantity: 1 }],
     });
 
-    expect(newOrder).toEqual(
-      mockOrderDoc({
-        userId: '1',
-        orderId: '12fe_asita',
-        total: 2000,
-        status: EnumOrderStatus.ORDER_CREATED,
-        items: [
-          {
-            id: '1',
-            quantity: 1,
-            name: 'product name 1',
-            image: 'url_image_1.png',
-            price: 500,
-          },
-          {
-            id: '2',
-            quantity: 2,
-            name: 'product name 2',
-            image: 'url_image_2.png',
-            price: 800,
-          },
-        ],
-      }),
-    );
+    expect(newOrder).toEqual(mockOrderDoc(orderArray[0]));
   });
 
   it('should cancel order and return order cancelled', async () => {
@@ -210,6 +238,7 @@ describe('OrdersService', () => {
       total: 2000,
       status: EnumOrderStatus.ORDER_CANCELLED,
       items: [],
+      createdAt: '2020-12-04T05:54:43.586Z',
     });
     const orderCancelled = await ordersService.cancelOrder('12fe_asita');
 
@@ -239,13 +268,7 @@ describe('OrdersService', () => {
         Promise.resolve(EnumOrderStatus.ORDER_CONFIRMED),
       );
 
-    const confirmResult = await ordersService.confirmOrder({
-      userId: '1',
-      orderId: '12fe_asita',
-      total: 2000,
-      status: EnumOrderStatus.ORDER_CREATED,
-      items: [],
-    });
+    const confirmResult = await ordersService.confirmOrder(orderArray[0]);
 
     expect(result).toContain(confirmResult);
   });

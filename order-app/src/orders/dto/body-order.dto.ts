@@ -3,13 +3,15 @@ import { BodyOrderItemDto } from './body-order-item.dto';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class BodyOrderDto {
-  @ApiProperty()
+  @ApiProperty({
+    default: '1',
+  })
   @IsNotEmpty()
   userId: string;
 
   @ApiProperty({
-    type: () => BodyOrderItemDto,
+    type: [BodyOrderItemDto],
   })
   @IsNotEmpty()
-  order: Array<BodyOrderItemDto>;
+  order: BodyOrderItemDto[];
 }
