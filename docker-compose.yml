@@ -38,6 +38,7 @@ services:
     #   - /app/node_modules/
     depends_on:
       - mongo
+      - redis
     networks:
       - test_setel
 
@@ -60,8 +61,8 @@ services:
     # volumes:
     #   - ./order-react/:/app/
     #   - /app/node_modules/
-    depends_on:
-      - order-app
+    # depends_on:
+    #   - order-app
     networks:
       - test_setel
 

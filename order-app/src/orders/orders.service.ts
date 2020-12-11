@@ -116,6 +116,19 @@ export class OrdersService {
   }
 
   async cancelOrder(id: string) {
+    const order = await this.findById(id);
+
+    if (
+      [
+        EnumOrderStatus.ORDER_CANCELLED,
+        EnumOrderStatus.ORDER_DELIVERED,
+      ].indexOf(order.status) > -1
+    ) {
+      throw new InternalServerErrorException(
+        `You can not cancel order cancelled or delivered.`,
+      );
+    }
+
     return this.orderModel.findOneAndUpdate(
       { orderId: id },
       { $set: { status: EnumOrderStatus.ORDER_CANCELLED } },
@@ -124,10 +137,27 @@ export class OrdersService {
   }
 
   async updateStatus(body: BodyUpdateOrderStatusDto) {
-    return this.orderModel.updateOne(
-      { orderId: body.id },
-      { $set: { status: body.status } },
-    );
+    let query = { orderId: body.id };
+
+    switch (body.status) {
+      case EnumOrderStatus.ORDER_CONFIRMED:
+        query['status'] = EnumOrderStatus.ORDER_CREATED;
+        break;
+      case EnumOrderStatus.ORDER_DELIVERED:
+        query['status'] = EnumOrderStatus.ORDER_CONFIRMED;
+        break;
+      case EnumOrderStatus.ORDER_CANCELLED:
+        query['$or'] = [
+          { status: EnumOrderStatus.ORDER_CREATED },
+          { status: EnumOrderStatus.ORDER_CONFIRMED },
+        ];
+        break;
+
+      default:
+        break;
+    }
+
+    return this.orderModel.updateOne(query, { $set: { status: body.status } });
   }
 
   async findAllByUser(
