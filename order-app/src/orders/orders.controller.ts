@@ -10,7 +10,6 @@ import {
 import { BodyOrderDto } from './dto/body-order.dto';
 import { OrdersService } from './orders.service';
 import { Order } from './interfaces/order.interface';
-
 @Controller('orders')
 export class OrdersController {
   private logger = new Logger('OrderController');

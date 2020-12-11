@@ -204,7 +204,7 @@ describe('OrdersService', () => {
   });
 
   it('should cancel order and return order cancelled', async () => {
-    jest.spyOn(model, 'findOneAndUpdate').mockResolvedValueOnce({
+    jest.spyOn(ordersService, 'cancelOrder').mockResolvedValueOnce({
       userId: '1',
       orderId: '12fe_asita',
       total: 2000,
