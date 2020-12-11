@@ -28,7 +28,7 @@ export class OrdersController {
   async findAllByUser(
     @Param('uid') uid: string,
     @Query('page') page: number,
-  ): Promise<Record<string, unknown>> {
+  ): Promise<OrderList> {
     this.logger.verbose(`Getting orders of userId: "${uid}".`);
     const orders = await this.ordersService.findAllByUser(uid, page);
     this.logger.verbose(

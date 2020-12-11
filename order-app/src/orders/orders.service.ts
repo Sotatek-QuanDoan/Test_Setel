@@ -18,6 +18,7 @@ import { EnumOrderStatus } from './enum/order_status.enum';
 import { products } from '../database-sample/products';
 import { Queue } from 'bull';
 import { InjectQueue } from '@nestjs/bull';
+import { OrderList } from './interfaces/order_list.interface';
 
 const { ORDER_MODEL, ORDER_QUEUE } = constants;
 
@@ -165,10 +166,7 @@ export class OrdersService {
     return this.orderModel.updateOne(query, { $set: { status: body.status } });
   }
 
-  async findAllByUser(
-    uid: string,
-    page: number,
-  ): Promise<Record<string, unknown>> {
+  async findAllByUser(uid: string, page: number): Promise<OrderList> {
     const limit = 5;
     const skip: number = +page >= 1 ? (+page - 1) * limit : 0;
 
