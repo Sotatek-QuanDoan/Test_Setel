@@ -1,27 +1,27 @@
-import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
-import { OrdersModule } from './orders/orders.module';
-import { MongooseModule } from '@nestjs/mongoose';
-import * as dotenv from 'dotenv';
 import { BullModule } from '@nestjs/bull';
-
-dotenv.config();
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { RequestMethod } from '@nestjs/common/enums/request-method.enum';
+import { MongooseModule } from '@nestjs/mongoose';
+import { LoggerMiddleware } from './middleware/logger.middleware';
+import { OrdersModule } from './modules/orders/orders.module';
+import { config } from './shared/config';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
-    MongooseModule.forRoot(
-      process.env.MONGO_URI || 'mongodb://localhost:27017/nestdb',
-    ),
-    OrdersModule,
+    MongooseModule.forRoot(config.mongodb.uri),
     BullModule.forRoot({
       redis: {
-        host: process.env.REDIS_HOST || 'localhost',
-        port: parseInt(process.env.REDIS_PORT) || 6379,
+        host: config.redis.host,
+        port: config.redis.port,
       },
     }),
+    OrdersModule,
   ],
-  controllers: [],
-  providers: [],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(LoggerMiddleware)
+      .forRoutes({ path: '*', method: RequestMethod.ALL });
+  }
+}

@@ -22,5 +22,6 @@ module.exports = {
     '@typescript-eslint/no-explicit-any': 'off',
     semi: ['error', 'always'],
     'no-unused-vars': ['error', { vars: 'all' }],
+    '@typescript-eslint/no-var-requires': 'off',
   },
 };

@@ -1,10 +1,10 @@
-import "./App.css";
-import { Header } from "./Components/Header/Header";
-import { Order } from "./Components/Order/Order";
-import { Shop } from "./Components/Shop/Shop";
-import { BrowserRouter as Router, Route } from "react-router-dom";
-import { OrderDetail } from "./Components/Order/Detail/OrderDetail";
 import React from "react";
+import { BrowserRouter as Router, Route } from "react-router-dom";
+import "./App.css";
+import { Header } from "./components/Header/Header";
+import { OrderDetail } from "./components/Order/Detail/OrderDetail";
+import { Order } from "./components/Order/Order";
+import { Shop } from "./components/Shop/Shop";
 
 const App:React.FC = () => {
   return (

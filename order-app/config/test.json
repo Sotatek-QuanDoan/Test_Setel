@@ -1,0 +1,19 @@
+{
+    "config": {
+        "server": {
+            "port": 4000
+        },
+        "mongodb": {
+            "uri": "mongodb://mongo:27017/nestdbtest"
+        },
+        "redis": {
+            "host": "redis",
+            "port": 6379
+        },
+        "microservices": {
+            "payment": {
+                "baseUrl": "http://payment-app:5000"
+            }
+        }
+    }
+}

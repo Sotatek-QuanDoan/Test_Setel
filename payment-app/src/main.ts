@@ -1,11 +1,28 @@
-import 'dotenv';
+require('dotenv').config();
 
+import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { config } from './shared/config';
+import { logger } from './shared/logger';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
-  const PORT = process.env.PORT || 5000;
   const app = await NestFactory.create(AppModule);
-  await app.listen(PORT);
+  app.useGlobalPipes(new ValidationPipe());
+  app.enableCors();
+
+  const options = new DocumentBuilder()
+    .setTitle('Payment App')
+    .setVersion('1.0')
+    .addTag('')
+    .build();
+  const document = SwaggerModule.createDocument(app, options);
+  SwaggerModule.setup('api', app, document);
+
+  await app.listen(config.server.port);
 }
-bootstrap();
+
+bootstrap().then(() => {
+  logger.info(`Started service at port ${config.server.port}`);
+});

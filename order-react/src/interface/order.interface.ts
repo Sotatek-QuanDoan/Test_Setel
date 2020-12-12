@@ -1,10 +1,10 @@
-import { EnumOrderStatus } from "../enum/order_status.enum";
+import { OrderStatus } from "../enum/order.enum";
 
 export interface Order {
   userId: string;
   orderId: string;
   total: number;
-  status: EnumOrderStatus;
+  status: OrderStatus;
   items: any[];
   createdAt: string;
 }

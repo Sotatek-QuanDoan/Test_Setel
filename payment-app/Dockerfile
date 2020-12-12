@@ -2,4 +2,5 @@ FROM node:14.15-alpine
 WORKDIR /app
 COPY . .
 RUN yarn install
-CMD ["yarn", "start:dev"]
+RUN npm run build
+CMD ["yarn", "start:prod"]
