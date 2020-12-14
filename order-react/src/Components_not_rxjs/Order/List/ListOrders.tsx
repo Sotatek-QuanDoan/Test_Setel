@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "dotenv";
-import { OrderRow } from "./OrderRow";
-import { Pagination } from "../Common/Pagination";
+import {OrderRow} from "./OrderRow";
+import {Pagination} from "../Common/Pagination";
 import { Order } from '../../../interface/order.interface';
-import { orderStore } from '../../../store/order.store';
+import { EnumOrderStatus } from "../../../enum/order_status.enum";
 
 const { REACT_APP_ORDER_API_URL } = process.env;
 
@@ -13,16 +13,34 @@ interface Props {
 }
 
 export const ListOrders:React.FC<Props> = (props) => {
-  const [orderState, setOrderState] = useState(orderStore.initialState);
+  const [orders, setOrders] = useState([] as any);
+  const [totalPage, setTotalPage] = useState(1);
+  const [currentPage, setCurrentpage] = useState(+props.page || 1);
 
   useEffect(() => {
-    orderStore.subscribe(setOrderState);
-    orderStore.init();
-  }, []);
+    getOrders(currentPage);
+  }, [currentPage]);
 
-  useEffect(() => {
-    getOrders(props.page);
-  }, [props.page]);
+  function cancelOrder(id: string) {
+    axios
+      .post(`${REACT_APP_ORDER_API_URL}/orders/${id}/cancel`, {})
+      .then((response) => {
+        if (
+          response.data.orderId === id &&
+          response.data.status === EnumOrderStatus.ORDER_CANCELLED
+        ) {
+          const orderRefresh: Order[] = orders.map((o: Order) => {
+            if (o.orderId === id) {
+              o.status = EnumOrderStatus.ORDER_CANCELLED;
+            }
+
+            return o;
+          });
+
+          setOrders(orderRefresh);
+        }
+      });
+  }
 
   function getOrders(page: number) {
     axios
@@ -30,11 +48,9 @@ export const ListOrders:React.FC<Props> = (props) => {
       .then((response) => {
         // handle success
         if (response.status === 200) {
-          orderStore.getOrders({
-            orders: response.data.list,
-            totalPage: response.data.totalPage,
-            currentPage: page
-          });
+          setOrders(response.data.list);
+          setTotalPage(response.data.totalPage);
+          setCurrentpage(page);
         }
       });
   }
@@ -53,18 +69,19 @@ export const ListOrders:React.FC<Props> = (props) => {
           </tr>
         </thead>
         <tbody>
-          {orderState.orders.length > 0 &&
-            orderState.orders.map((o: Order, i) => (
+          {orders &&
+            orders.map((o, i) => (
               <OrderRow
                 order={o}
                 key={i}
+                cancel={() => cancelOrder(o.orderId)}
               />
             ))}
         </tbody>
         <tfoot>
           <tr>
             <td colSpan={5}>
-              <Pagination totalPage={orderState.totalPage} currentPage={props.page} />
+              <Pagination totalPage={totalPage} currentPage={currentPage} />
             </td>
           </tr>
         </tfoot>

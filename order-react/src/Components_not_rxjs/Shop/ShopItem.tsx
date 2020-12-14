@@ -1,9 +1,9 @@
 import React from "react";
 import { Product } from '../../interface/product.interface';
-import { cartStore } from '../../store/cart.store';
 
 interface Props {
   item: Product,
+  addToCart: any,
 }
 
 const ShopItem:React.FC<Props> = (props) => {
@@ -20,7 +20,7 @@ const ShopItem:React.FC<Props> = (props) => {
             <button
               className="btn btn-info"
               onClick={() => {
-                cartStore.addToCart(props.item.id);
+                props.addToCart();
               }}
             >
               Add to cart

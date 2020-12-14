@@ -1,12 +1,12 @@
 import React from "react";
 import { Product } from '../../interface/product.interface';
-import { cartStore } from '../../store/cart.store';
 
 interface Props {
   item: Product,
+  removeFromCart: any
 }
 
-export const CartItem:React.FC<Props> = (props) => {
+const CartItem:React.FC<Props> = (props) => {
   return (
     <tr>
       <td>
@@ -19,7 +19,7 @@ export const CartItem:React.FC<Props> = (props) => {
       <td>
         <button
           className="btn btn-danger btn-xs"
-          onClick={() => cartStore.removeFromCart(props.item.id)}
+          onClick={() => props.removeFromCart()}
         >
           x
         </button>
@@ -27,3 +27,5 @@ export const CartItem:React.FC<Props> = (props) => {
     </tr>
   );
 }
+
+export default CartItem;

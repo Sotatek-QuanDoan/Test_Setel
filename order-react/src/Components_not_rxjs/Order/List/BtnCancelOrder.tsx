@@ -1,27 +1,10 @@
 import React from "react";
 import { EnumOrderStatus } from '../../../enum/order_status.enum';
-import axios from 'axios';
-import "dotenv";
-import { orderStore } from '../../../store/order.store';
-
-const { REACT_APP_ORDER_API_URL } = process.env;
 
 interface Props {
   id: string,
   status: EnumOrderStatus,
-}
-
-function cancelOrder(id: string) {
-  axios
-    .post(`${REACT_APP_ORDER_API_URL}/orders/${id}/cancel`, {})
-    .then((response) => {
-      if (
-        response.data.orderId === id &&
-        response.data.status === EnumOrderStatus.ORDER_CANCELLED
-      ) {
-        orderStore.cancelOrder(response.data.orderId);
-      }
-    });
+  cancel: any
 }
 
 export const BtnCancelOrder:React.FC<Props> = (props) => {
@@ -30,8 +13,7 @@ export const BtnCancelOrder:React.FC<Props> = (props) => {
       className="btn btn-small btn-danger"
       onClick={() => {
         if (window.confirm("Are you sure cancel the order?")) {
-          // props.cancel();
-          cancelOrder(props.id);
+          props.cancel();
         }
       }}
     >

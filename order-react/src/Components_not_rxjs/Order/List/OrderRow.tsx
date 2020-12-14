@@ -7,6 +7,7 @@ import { Order } from '../../../interface/order.interface';
 
 interface Props {
   order: Order,
+  cancel: any
 }
 
 export const OrderRow:React.FC<Props> = (props) => {
@@ -25,6 +26,7 @@ export const OrderRow:React.FC<Props> = (props) => {
         <BtnCancelOrder
           id={props.order.orderId}
           status={props.order.status}
+          cancel={() => props.cancel()}
         />
       </td>
     </tr>

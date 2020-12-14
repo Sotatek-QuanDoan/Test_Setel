@@ -1,14 +1,28 @@
 import React from "react";
-import CartItem from "./CartItem";
-import { Product } from '../../interface/product.interface';
+import { CartItem } from "./CartItem";
+import { CartIF } from '../../interface/cart.interface';
+import { cartStore } from '../../store/cart.store';
+import "dotenv";
+import axios from 'axios';
 
-interface Props {
-  cart: Product[],
-  totalCart: number,
-  removeFromCart: any
+const { REACT_APP_ORDER_API_URL } = process.env;
+
+function placeOrder(order) {
+  axios
+    .post(`${REACT_APP_ORDER_API_URL}/orders`, {
+      userId: '1',
+      order,
+    })
+    .then((response: any) => {
+      if (response.status === 201) {
+        alert("Place order success!");
+
+        cartStore.clearCart();
+      }
+    });
 }
 
-const Cart:React.FC<Props> = (props) => {
+export const Cart:React.FC<CartIF> = (props) => {
   return (
     <div className="col-lg-3">
       <h4>Cart</h4>
@@ -24,11 +38,10 @@ const Cart:React.FC<Props> = (props) => {
           </thead>
           <tbody>
             {props.cart &&
-              props.cart.map((o: Product, i: number) => (
+              props.cart.map((o, i) => (
                 <CartItem
                   item={o}
                   key={i}
-                  removeFromCart={() => props.removeFromCart(o.id)}
                 />
               ))}
           </tbody>
@@ -36,11 +49,11 @@ const Cart:React.FC<Props> = (props) => {
 
         <div>
           <div>Total: {props.totalCart}</div>
-          <button className="btn btn-primary">Place order</button>
+          <button className="btn btn-primary" onClick={() => placeOrder(props.cart)}>
+            Place order
+          </button>
         </div>
       </div>
     </div>
   );
 }
-
-export default Cart;
